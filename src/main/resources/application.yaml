@@ -1,0 +1,33 @@
+server:
+  port: 8035
+spring:
+  application:
+    name: Supervisor with Keycloak
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: "http://localhost:8080/auth/realms/supervisorrealm"
+        registration:
+          keycloak:
+            provider: external
+            client-name: supervisor-client
+            client-id: supervisor-client
+            client-secret: IeX1vLpa2nQV5a6M8yHYJwLivg0yokth
+            scope: openid,profile
+            authorization-grant-type: authorization_code
+keycloak:
+  server-url: http://localhost:8180/auth
+  realm: supervisorrealm
+  username: admin
+  password: admin
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+  pattern:
+    console: "%d{dd-MM-yyyy HH:mm:ss} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n"
+
