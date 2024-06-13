@@ -6,23 +6,31 @@ spring:
 
   security:
     oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: "http://localhost:8080/auth/realms/supervisorrealm"
-        registration:
-          keycloak:
-            provider: external
-            client-name: supervisor-client
-            client-id: supervisor-client
-            client-secret: IeX1vLpa2nQV5a6M8yHYJwLivg0yokth
-            scope: openid,profile
-            authorization-grant-type: authorization_code
-keycloak:
-  server-url: http://localhost:8180/auth
-  realm: supervisorrealm
-  username: admin
-  password: admin
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:8080/auth/realms/myrealm"
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+
+#      client:
+#        provider:
+#          keycloak:
+#            issuer-uri: "http://localhost:8080/auth/realms/myrealm"
+#            user-name-attribute: preferred_username
+#        registration:
+#          keycloak:
+#            provider: external
+#            client-name: myrealm
+#            client-id: myrealm
+#            client-secret: uhgIl3fwoxTXsPxsA6rFB2HJQARk4YEc
+#            scope: openid,profile
+#            authorization-grant-type: authorization_code
+#keycloak:
+#
+#  server-url: http://localhost:8080/auth
+#  realm: myrealm
+#  username: admin
+#  password: admin
 
 logging:
   level:
