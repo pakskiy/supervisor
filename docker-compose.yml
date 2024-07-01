@@ -1,0 +1,48 @@
+version: '3'
+name: local-supervisor-app
+services:
+  keycloakdb:
+    image: bitnami/postgresql:16.2.0
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRESQL_TIMEZONE: "UTC"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+  keycloak_web:
+    image: quay.io/keycloak/keycloak:24.0.4
+    container_name: keycloak_web
+    command:
+      - start-dev
+      - --import-realm
+    ports:
+      - "9080:8080"
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloakdb:5432/users
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: password
+
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      KC_FEATURES: token-exchange,admin-fine-grained-authz
+
+    depends_on:
+      - keycloakdb
+
+    volumes:
+      - ./docker/keycloak/realm:/opt/keycloak/data/import
+
+
+volumes:
+  postgres_data:
