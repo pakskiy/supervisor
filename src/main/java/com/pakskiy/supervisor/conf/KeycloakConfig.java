@@ -1,4 +1,4 @@
-package com.pakskiy.auth.conf;
+package com.pakskiy.supervisor.conf;
 
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;

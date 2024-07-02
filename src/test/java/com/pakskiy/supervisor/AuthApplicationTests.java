@@ -1,4 +1,4 @@
-package com.pakskiy.auth;
+package com.pakskiy.supervisor;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

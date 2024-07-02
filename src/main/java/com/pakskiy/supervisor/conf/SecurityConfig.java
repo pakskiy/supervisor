@@ -1,4 +1,4 @@
-package com.pakskiy.auth.conf;
+package com.pakskiy.supervisor.conf;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

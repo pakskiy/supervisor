@@ -1,4 +1,4 @@
-package com.pakskiy.auth;
+package com.pakskiy.supervisor;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.TestConfiguration;
