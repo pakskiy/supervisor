@@ -1,7 +1,10 @@
 package com.pakskiy.supervisor.rest;
 
+import com.pakskiy.supervisor.dto.LoginRequestDto;
+import com.pakskiy.supervisor.dto.LoginResponseDto;
 import com.pakskiy.supervisor.dto.RegisterRequestDto;
 import com.pakskiy.supervisor.dto.RegisterResponseDto;
+import com.pakskiy.supervisor.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +18,19 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/user")
 @AllArgsConstructor
+@RequestMapping("/api/v1/user")
 public class UserRestControllerV1 {
-    @PostMapping
-    public Mono<ResponseEntity<RegisterResponseDto>> register(@Valid @RequestBody RegisterRequestDto registerRequestDto) {
+    private final AuthService authService;
 
+    @PostMapping("/register")
+    public Mono<ResponseEntity<RegisterResponseDto>> register(@Valid @RequestBody RegisterRequestDto request) {
+        return authService.register(request);
+    }
+
+    @PostMapping("/login")
+    public Mono<ResponseEntity<LoginResponseDto>> login(@Valid @RequestBody LoginRequestDto request) {
+        return authService.login(request);
     }
 
     @GetMapping("/public")

@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
-    private final String[] publicRoutes = {"/api/v1/auth/register/**", "api/v1/auth/login"};
+    private final String[] publicRoutes = {"/api/v1/user/register/**", "api/v1/user/login"};
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeExchange(configurer -> configurer
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .pathMatchers(publicRoutes).permitAll()
-                        .pathMatchers("/api/v1/auth/info/**").authenticated()
+                        .pathMatchers("/api/v1/user/info/**").authenticated()
                         .anyExchange()
                         .authenticated())
                 .oauth2ResourceServer(customizer -> customizer.jwt(jwt -> {
