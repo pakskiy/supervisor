@@ -24,7 +24,7 @@ keycloak:
   realm: appauth
   domain: localhost:9080
   clientId: app-auth-client-id
-  clientSecret: GcSTodvYCwMVEsAy3L8hL5BugDlvikqn
+  clientSecret: RYvZsGxqpV4cwjwmLrpts6mAS34kY32r
   urls:
     auth: http://${keycloak.domain}
 url-frontend-guest: http://localhost

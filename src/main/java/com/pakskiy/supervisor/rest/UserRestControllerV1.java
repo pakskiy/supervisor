@@ -1,5 +1,6 @@
 package com.pakskiy.supervisor.rest;
 
+import com.pakskiy.supervisor.dto.InfoResponseDto;
 import com.pakskiy.supervisor.dto.LoginRequestDto;
 import com.pakskiy.supervisor.dto.LoginResponseDto;
 import com.pakskiy.supervisor.dto.RegisterRequestDto;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
+
+import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -33,9 +36,9 @@ public class UserRestControllerV1 {
         return authService.login(request);
     }
 
-    @GetMapping("/public")
-    public Mono<String> publicEndpoint() {
-        return Mono.just("This is a public endpoint");
+    @GetMapping("/info")
+    public Mono<ResponseEntity<InfoResponseDto>> info(Mono<Principal> principal) {
+        return authService.info(principal);
     }
 
     @GetMapping("/private")

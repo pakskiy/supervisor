@@ -48,7 +48,7 @@
     "realm": [
       {
         "id": "75f7b6d9-c030-40f5-baa3-82db16f6056b",
-        "name": "INDIVIDUALS",
+        "name": "USERS",
         "description": "",
         "composite": false,
         "clientRole": false,
@@ -106,15 +106,6 @@
             ]
           }
         },
-        "clientRole": false,
-        "containerId": "6061cf2f-0839-4bc8-a2ba-c957d6c8746a",
-        "attributes": {}
-      },
-      {
-        "id": "6424e0a9-fca1-4ca8-b5b2-3d15c6d4dbcd",
-        "name": "MERCHANTS",
-        "description": "",
-        "composite": false,
         "clientRole": false,
         "containerId": "6061cf2f-0839-4bc8-a2ba-c957d6c8746a",
         "attributes": {}

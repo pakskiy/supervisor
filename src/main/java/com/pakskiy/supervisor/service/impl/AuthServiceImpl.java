@@ -1,5 +1,6 @@
 package com.pakskiy.supervisor.service.impl;
 
+import com.pakskiy.supervisor.dto.InfoResponseDto;
 import com.pakskiy.supervisor.dto.LoginRequestDto;
 import com.pakskiy.supervisor.dto.LoginResponseDto;
 import com.pakskiy.supervisor.dto.RegisterRequestDto;
@@ -23,11 +24,15 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -99,25 +104,29 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    @Override
+    public Mono<ResponseEntity<InfoResponseDto>> info(Mono<Principal> principal) {
+        return principal
+                .flatMap(el -> {
+                    Authentication authentication = (Authentication) el;
+                    Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+                    List<String> roleList = authorities.stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .filter(role -> role.equals("ROLE_USERS"))
+                            .toList();
+                    return Mono.just(InfoResponseDto.builder()
+                            .username(el.getName())
+                            .role(roleList)
+                            .build());
+                })
+                .map(ResponseEntity::ok);
+    }
+
     public Mono<String> registerUser(RegisterRequestDto registration, String roleName) {
         if (isEmpty(registration.getUsername()) || isEmpty(registration.getPassword()) || isEmpty(registration.getEmail())) {
             return Mono.error(new IllegalArgumentException("Invalid credentials"));
         }
 
-        Response response = getResponse(registration);
-        if (response.getStatus() != 201) {
-            return Mono.error(new IllegalArgumentException("Invalid credentials"));
-        }
-        URI uri = response.getLocation();
-
-        String createdUserId = uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
-        log.info("Created user {}", createdUserId);
-
-        assignRole(createdUserId, roleName);
-        return Mono.just(createdUserId);
-    }
-
-    private Response getResponse(RegisterRequestDto registration) {
         UserRepresentation user = new UserRepresentation();
         user.setEnabled(true);
         user.setUsername(registration.getUsername());
@@ -139,7 +148,16 @@ public class AuthServiceImpl implements AuthService {
         UsersResource usersResource = getUsersResource();
 
         Response response = usersResource.create(user);
-        return response;
+        if (response.getStatus() != 201) {
+            return Mono.error(new IllegalArgumentException("Invalid credentials"));
+        }
+        URI uri = response.getLocation();
+
+        String createdUserId = uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
+        log.info("Created user {}", createdUserId);
+
+        assignRole(createdUserId, roleName);
+        return Mono.just(createdUserId);
     }
 
     private UsersResource getUsersResource() {
