@@ -1,6 +1,10 @@
 package com.pakskiy.supervisor.rest;
 
 import com.pakskiy.supervisor.config.KeycloakTestContainers;
+import com.pakskiy.supervisor.dto.LoginRequestDto;
+import com.pakskiy.supervisor.dto.RegisterRequestDto;
+import com.pakskiy.supervisor.dto.RegisterResponseDto;
+import com.pakskiy.supervisor.utils.UserUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,84 +29,67 @@ class AuthControllerV1Test extends KeycloakTestContainers {
 
 
     //happy path
-//    @Test
-//    @DisplayName("Should return 201 response fore creation of merchant")
-//    public void givenValidMerchantRegistration_whenRegisterMerchant_then201Response() {
+    @Test
+    @DisplayName("Should return 201 response fore creation of merchant")
+    void givenValidUserRegistration_whenRegisterUser_then201Response() {
+        // Given
+        RegisterRequestDto validUserRegistration = UserUtils.getJsonForRegistration();
+
+        // When
+        WebTestClient.ResponseSpec result = webTestClient.post().uri("/api/v1/user/register")
+               .body(Mono.just(validUserRegistration), RegisterRequestDto.class)
+               .exchange();
+
+        // Then
+        result.expectStatus().isCreated();
+    }
+
+    @Test
+    @DisplayName("Should return valid access token")
+    void givenValidLoginRequest_whenLogin_thenGetAccessToken() {
+        //Given
+        webTestClient.post().uri("/api/v1/user/register")
+                .body(Mono.just(UserUtils.getJsonForRegistrationForLogin()), RegisterRequestDto.class)
+                .exchange();
+
+        LoginRequestDto validLoginRequest = UserUtils.getJsonForLoginSuccess();
+
+        // When
+        WebTestClient.ResponseSpec result = webTestClient.post().uri("/api/v1/user/login")
+                .body(Mono.just(validLoginRequest), LoginRequestDto.class)
+                .exchange();
+
+        // Then
+        result.expectStatus().isOk();
+    }
+
+    @Test
+    @DisplayName("Should return information about user")
+    void givenValidToken_whenGettingUserInfo_thenReturnInfo() {
+        // Given
+//        WebTestClient.ResponseSpec register = webTestClient.post().uri("/api/v1/auth/register/merchants")
+//                .body(Mono.just(AuthUtils.registrationForLoginTest()), UserRegistration.class)
+//                .exchange();
+//        LoginRequest validLoginRequest = AuthUtils.jsonForLoginTest();
+//        WebTestClient. ResponseSpec response = webTestClient.post().uri("/api/v1/auth/login")
+//                .body(Mono.just(validLoginRequest), LoginRequest.class)
+//                .exchange();
 //
-//        // Given
-////        UserRegistration validUserRegistration = AuthUtils.jsonForCreatingMerchantTest();
-////
-////        // When
-////        WebTestClient.ResponseSpec result = webTestClient.post().uri("/api/v1/auth/register/merchants")
-////               .body(Mono.just(validUserRegistration), UserRegistration.class)
-////               .exchange();
-////
-////        // Then
-////        result.expectStatus().isCreated();
-//    }
-//    @Test
-//    @DisplayName("Should return 201 response fore creation of individual")
-//    public void givenValidIndividualRegistration_whenRegisterIndividual_then201Response() {
+//        ResponseTokenLogin token = response
+//                .expectStatus().isOk()
+//                .expectBody(ResponseTokenLogin.class)
+//                .returnResult().getResponseBody();
+//        String tokenValue = token.getAccessToken();
 //
-//        // Given
-////        UserRegistration validUserRegistration = AuthUtils.jsonForCreatingIndividualTest();
-////
-////        // When
-////        WebTestClient.ResponseSpec result = webTestClient.post().uri("/api/v1/auth/register/individuals")
-////                .body(Mono.just(validUserRegistration), UserRegistration.class)
-////                .exchange();
-////
-////        // Then
-////        result.expectStatus().isCreated();
-//    }
+//        // When
+//        WebTestClient.ResponseSpec result = webTestClient.get().uri("/api/v1/auth/info/me")
+//                .headers(headers -> headers.setBearerAuth(tokenValue))
+//                .exchange();
 //
-//    @Test
-//    @DisplayName("Should return valid access token")
-//    public void givenValidLoginRequest_whenLogin_thenGetAccessToken() {
-//        // Given
-////        WebTestClient.ResponseSpec register = webTestClient.post().uri("/api/v1/auth/register/merchants")
-////                .body(Mono.just(AuthUtils.registrationForLoginTest()), UserRegistration.class)
-////                .exchange();
-////        LoginRequest validLoginRequest = AuthUtils.jsonForLoginTest();
-////
-////        // When
-////        WebTestClient.ResponseSpec result = webTestClient.post().uri("/api/v1/auth/login")
-////                .body(Mono.just(validLoginRequest), LoginRequest.class)
-////                .exchange();
-////
-////        // Then
-////        result.expectStatus().isOk();
-//    }
-//
-//
-//
-//    @Test
-//    @DisplayName("Should return information about user")
-//    public void givenValidToken_whenGettingUserInfo_thenReturnInfo() {
-//        // Given
-////        WebTestClient.ResponseSpec register = webTestClient.post().uri("/api/v1/auth/register/merchants")
-////                .body(Mono.just(AuthUtils.registrationForLoginTest()), UserRegistration.class)
-////                .exchange();
-////        LoginRequest validLoginRequest = AuthUtils.jsonForLoginTest();
-////        WebTestClient. ResponseSpec response = webTestClient.post().uri("/api/v1/auth/login")
-////                .body(Mono.just(validLoginRequest), LoginRequest.class)
-////                .exchange();
-////
-////        ResponseTokenLogin token = response
-////                .expectStatus().isOk()
-////                .expectBody(ResponseTokenLogin.class)
-////                .returnResult().getResponseBody();
-////        String tokenValue = token.getAccessToken();
-////
-////        // When
-////        WebTestClient.ResponseSpec result = webTestClient.get().uri("/api/v1/auth/info/me")
-////                .headers(headers -> headers.setBearerAuth(tokenValue))
-////                .exchange();
-////
-////        // Then
-////        result.expectStatus().isOk()
-////                .expectBody(ResponseInfo.class);
-//    }
+//        // Then
+//        result.expectStatus().isOk()
+//                .expectBody(ResponseInfo.class);
+    }
 
     // unhappy path
     @Test

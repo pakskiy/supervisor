@@ -1,3 +1,24 @@
+package com.pakskiy.supervisor;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class AuthApplicationTests {
+
+
+    @Test
+    @DisplayName("Load context")
+    void loadContext() {
+    }
+
+
+
+}
+
+
+
 //package com.pakskiy.supervisor;
 //
 //import dasniko.testcontainers.keycloak.KeycloakContainer;
